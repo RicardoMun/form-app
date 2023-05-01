@@ -1,7 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 
-export const User = ({ item, setModalUserForm, editUser, eliminatedUser }) => {
+export const User = ({ 
+    item, 
+    setModalUserForm, 
+    editUser, 
+    eliminatedUser, 
+    setUser, 
+    setModalUser 
+}) => {
     const { userName, date, id } = item;
     const dateFormate = (date) => {
         const newDate = new Date(date);
@@ -13,35 +20,41 @@ export const User = ({ item, setModalUserForm, editUser, eliminatedUser }) => {
         };
         return newDate.toLocaleDateString("es-ES", optionsFormate);
     };
-    console.log(item);
     return (
-        <View style={styles.container}>
-            <View style={styles.content}>
-                <Text style={styles.label}>Estudiante</Text>
-                <Text style={styles.text}>{userName}</Text>
-                <Text style={styles.date_format}>{dateFormate(date)}</Text>
-                <View style={styles.buttons}>
-                    <Pressable style={[styles.btn, styles.btnEdit]} 
-                        onPress = {() => {
-                            setModalUserForm(true)
-                            editUser(id)
-                        }}
+        <Pressable 
+            onPress={() => {
+                setModalUser(true)
+                setUser(item)
+            }}
+        >  
+            <View style={styles.container}>
+                <View style={styles.content}>
+                    <Text style={styles.label}>Estudiante</Text>
+                    <Text style={styles.text}>{userName}</Text>
+                    <Text style={styles.date_format}>{dateFormate(date)}</Text>
+                    <View style={styles.buttons}>
+                        <Pressable style={[styles.btn, styles.btnEdit]} 
+                            onPress = {() => {
+                                setModalUserForm(true)
+                                editUser(id)
+                            }}
 
+                            >
+                            <Text style={styles.text}>Editar</Text>
+                        </Pressable>
+                        <Pressable style={[styles.btn, styles.btnDeleteOne]}
+                            onPress = {() => {
+                                eliminatedUser(id)
+                            }}
                         >
-                        <Text style={styles.text}>Editar</Text>
-                    </Pressable>
-                    <Pressable style={[styles.btn, styles.btnDeleteOne]}
-                        onPress = {() => {
-                            eliminatedUser(id)
-                        }}
-                    >
-                        <Text style={styles.text}>Eliminar</Text>
-                    </Pressable>
+                            <Text style={styles.text}>Eliminar</Text>
+                        </Pressable>
 
+                    </View>
                 </View>
             </View>
-            
-        </View>
+        </Pressable>
+        
     );
 };
 
