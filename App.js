@@ -1,19 +1,22 @@
 import React, {useState} from 'react';
 import  { UserForm }  from './src/components/UserForm';
-import { FlatList, Modal, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Modal, Pressable, SafeAreaView, StyleSheet, Text, View, Alert } from 'react-native';
 import { User } from './src/components/User';
+import { UserInfo } from './src/components/UserInfo';
 /* import { ExampleForm } from './src/components/ExampleForm';
 import { Book } from './src/components/Book'; */
 
 export default function App() {
-  const [modalVisible, setModalVisible] = useState(false)
-  const [modalUserForm,setModalUserForm] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalUserForm, setModalUserForm] = useState(false);
   /* const [modalExampleForm,setModalExampleForm] = useState(false) */
-  const [registeredUsers,setRegisteredUsers] = useState([])
-  const [user, setUser] = useState({})
+  /* Creamos un array vacio par listar los usuarios */
+  const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [user, setUser] = useState({});
+  const [modalUser, setModalUser] = useState(false);
 
 
-  const [dataArray,setdataArray] = useState([])
+  const [dataArray,setdataArray] = useState([]);
   /* const [book, setBook] = useState({}) */
 
 
@@ -21,28 +24,24 @@ export default function App() {
     console.log("usuario",id);
     const editUser = registeredUsers.filter((user)=> user.id === id);
     setUser(editUser[0])
-    console.log(editUser);
+    console.log(editUser[0]);
   }
 
   const eliminateUser = (id) => {
-    console.log("usuario",id);
-    const editUser = registeredUsers.filter((user)=> user.id !== id);
-    setRegisteredUsers(editUser)
-    console.log(editUser);
-  }
-
-  const editBook = (id) => {
-    console.log("book",id)
-    const editedBook = dataArray.filter((book) => book.id=== id )
-    setBook(editedBook[0])
-    console.log(editedBook);
-  }
-
-  const eliminateBook = (id) => {
-    console.log("usuario",id);
-    const book = dataArray.filter((book)=> book.id !== id);
-    setdataArray(book)
-    console.log(book);
+    Alert.alert(
+      "Deseas eliminar este usuario?",
+      "Esta accion no se puede deshacer",
+      [
+        { text: "Cancelar" },
+        { text: "Eliminar",
+          onPress: () => {
+            console.log("Eliminando",id);
+            const editUser = registeredUsers.filter((user)=> user.id !== id);
+            setRegisteredUsers(editUser);
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -51,10 +50,6 @@ export default function App() {
         Registrate en la {""}
         <Text style={styles.titleBold}>UAM</Text>
       </Text>
-
-      <Pressable onPress={() => {setModalVisible(true)}} style = {styles.btnNewUser}>
-        <Text style = {styles.titleButton}>Prueba Modal</Text>
-      </Pressable>
 
       <Pressable onPress={() => {setModalUserForm(true)}} style = {styles.btnNewUser}>
         <Text style = {styles.titleButton}>Nuevo Usuario</Text>
@@ -67,12 +62,14 @@ export default function App() {
             data = {registeredUsers}
             keyExtractor = {(item) => item.id}
             renderItem={ ({item}) => {
-              console.log(item);
-              return <User item = {item} 
-              setModalUserForm = {setModalUserForm}
-              user = {user}
-              editUser = {editUser}
-              eliminatedUser={eliminateUser}
+              return <User 
+                item = {item} 
+                setModalUserForm = {setModalUserForm}
+                user = {user}
+                editUser = {editUser}
+                eliminatedUser = {eliminateUser}
+                setUser = {setUser}
+                setModalUser = {setModalUser}
               />
             }}
           />
@@ -86,6 +83,11 @@ export default function App() {
         user = {user}
         setUser = {setUser}
       ></UserForm>
+
+      <Modal animationType='fade' visible={modalUser}>
+        <UserInfo></UserInfo>
+      </Modal>
+
 
       {/* <Pressable onPress={() => {setModalExampleForm(true)}} style = {styles.btnNewUser}>
         <Text style = {styles.title}>Nuevo Libro</Text>
@@ -159,6 +161,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     margin: 70,
+  },
+  textNoUser : {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#FFF',
+    paddingTop: 35,
   }
 });
 
