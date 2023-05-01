@@ -32,13 +32,13 @@ export const UserForm = ({
   const [cellphone, setCellphone] = useState("");
   const [comments, setComments] = useState("");
 
-  console.log(Object.keys(userObj));
+  /* console.log(Object.keys(userObj)); */
 
   useEffect(() => {
-    console.log("Entre al useEffect");
-    console.log("info del objeto user" + userObj.id);
+    /* console.log("Entre al useEffect"); */
+    /* console.log("info del objeto user" + userObj.id); */
     if (Object.keys(userObj).length > 0) {
-      console.log("Entre al condicional del useEffect");
+      /* console.log("Entre al condicional del useEffect"); */
       setId(userObj.id);
       setUserName(userObj.userName);
       setUserEmail(userObj.userEmail);
@@ -78,13 +78,31 @@ export const UserForm = ({
       .map(([key]) => key);
 
     if (emptyFields.length > 0) {
-      console.log("Error: Hay campos sin diligenciar:", emptyFields.join(", "));
+      /* console.log("Error: Hay campos sin diligenciar:", emptyFields.join(", ")); */
+      Alert.alert(
+        "ERROR",
+        "Hay campos sin diligenciar",
+        [
+          { text: "Aceptar",
+            onPress: () => console.log("OK Pressed")
+          },
+        ]
+      );
       return;
     }
 
 
     if (![userName, userEmail, cellphone, comments].every(field => field !== "")) {
-      console.log("Error: Hay campos sin diligenciar");
+      //console.log("Error: Hay campos sin diligenciar");
+      Alert.alert(
+        "ERROR",
+        "Hay campos sin diligenciar",
+        [
+          { text: "Aceptar",
+            onPress: () => console.log("OK Pressed")
+          },
+        ]
+      );
       setTimeout(() => {
         Alert.alert("Error", "Hay campos sin diligenciar");
       }, 100);
@@ -102,22 +120,20 @@ export const UserForm = ({
     if (id) {
       // Editar
       newUser.id = id;
-      console.log("Editando", newUser);
       const userEdited = registeredUsers.map((userState) =>
         userState.id === newUser.id ? newUser : userState
       );
       setRegisteredUsers(userEdited)
-      console.log(userEdited)
       setUser({})
     } else {
       // Nuevo registro
       newUser.id = Date.now();
       setRegisteredUsers([...registeredUsers, newUser]);
     }
-
     /*     setRegisteredUsers([...registeredUsers, newUser]); */
     setModalUserForm(!modalUserForm);
-
+    /* Se limpian los campos para que no quede ningún registro */
+    setId("");
     setUserName("");
     setUserEmail("");
     setCellphone("");
@@ -146,7 +162,7 @@ export const UserForm = ({
           </Pressable>
 
           <Text style={styles.title}>
-            Inscripción {""}
+            {userObj.id ? "Editar" : "Registrar"}{" "}
             <Text style={styles.titleBold}>Vacaciones UAM</Text>
           </Text>
 
@@ -230,7 +246,9 @@ export const UserForm = ({
           </View>
 
           <Pressable style={styles.btnNewUser} onPress={handleUser}>
-            <Text style={styles.btnTextNewUser}>Agregar</Text>
+            <Text style={styles.btnTextNewUser}>
+              {userObj.id ? "Editar" : "Agregar"}
+            </Text>
           </Pressable>
         </ScrollView>
       </ImageBackground>
